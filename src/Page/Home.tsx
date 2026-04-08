@@ -5,6 +5,7 @@ import { useTransactions } from '../hooks/useTransactions'
 import { useBudget } from '../hooks/useBudget'
 import { useProfile } from '../hooks/useProfile'
 import TransactionModal from '../components/TransactionModal'
+import ExportModal from '../components/ExportModal'
 import './Dashboard.css'
 
 function calculateThaiTax(income: number): number {
@@ -43,6 +44,7 @@ export default function Home() {
   const currentBudget = getBudgetForMonth(currentMonth, currentYear)
   const { profile } = useProfile()
   const [showModal, setShowModal] = useState(false)
+  const [showExport, setShowExport] = useState(false)
   const [fabOpen, setFabOpen] = useState(false)
 
   useEffect(() => { AOS.refresh() }, [transactions])
@@ -167,6 +169,9 @@ export default function Home() {
             <button className="fab-option" onClick={() => { setFabOpen(false); setShowModal(true) }}>
               <span>Add Transaction</span>
             </button>
+            <button className="fab-option" onClick={() => { setFabOpen(false); setShowExport(true) }}>
+              <span>Export CSV</span>
+            </button>
           </div>
         )}
         <button className={`fab-button ${fabOpen ? 'active' : ''}`} onClick={() => setFabOpen(!fabOpen)}>
@@ -182,6 +187,10 @@ export default function Home() {
           onSubmit={addTransaction}
           onAddCategory={addCategory}
         />
+      )}
+
+      {showExport && (
+        <ExportModal onClose={() => setShowExport(false)} />
       )}
     </div>
   )
