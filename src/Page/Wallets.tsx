@@ -171,9 +171,10 @@ export default function Wallets() {
                   ))}
                   <label
                     className={`color-swatch ${!COLORS.includes(newColor) ? 'active' : ''}`}
-                    style={{ background: newColor, position: 'relative', overflow: 'hidden' }}
+                    style={{ background: newColor, position: 'relative', overflow: 'hidden', textAlign: 'center', fontSize: '1.2rem' }}
                     title="Custom color"
                   >
+                    🎨
                     <input
                       type="color"
                       value={newColor}
