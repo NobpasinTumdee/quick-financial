@@ -402,7 +402,7 @@
 .comparison-value.income { color: var(--accent); }
 .comparison-value.expense { color: var(--danger); }
 
-@media (max-width: 768px) {
+@media (max-width: 820px) {
     .comparison-grid {
         grid-template-columns: 1fr;
     }

@@ -6,6 +6,7 @@ import { useBudget } from '../hooks/useBudget'
 import { useProfile } from '../hooks/useProfile'
 import TransactionModal from '../components/TransactionModal'
 import ExportModal from '../components/ExportModal'
+import BudgetChart from '../components/BudgetChart'
 import './Dashboard.css'
 
 function calculateThaiTax(income: number): number {
@@ -100,20 +101,25 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Budget Progress */}
-      <div className="budget-progress glass-card" data-aos="fade-up" data-aos-delay="150">
-        <h3>Budget Progress</h3>
-        <p className="budget-subtitle">
-          {currentBudget
-            ? `${currentBudget.needs_percent}/${currentBudget.wants_percent}/${currentBudget.savings_percent} plan`
-            : 'No budget set — using 50/30/20 default'}
-        </p>
+      <div className='dashboard-budget-chart'>
+        {/* Budget Progress */}
+        <div className="budget-progress glass-card" data-aos="fade-up" data-aos-delay="150">
+          <h3>Budget Progress</h3>
+          <p className="budget-subtitle">
+            {currentBudget
+              ? `${currentBudget.needs_percent}/${currentBudget.wants_percent}/${currentBudget.savings_percent} plan`
+              : 'No budget set — using 50/30/20 default'}
+          </p>
 
-        <div className="progress-items">
-          <ProgressBar label="Needs" spent={monthExpense * 0.6} budget={needsBudget} color="var(--warning)" />
-          <ProgressBar label="Wants" spent={monthExpense * 0.4} budget={wantsBudget} color="var(--primary)" />
-          <ProgressBar label="Savings" spent={savedThisMonth} budget={savingsBudget} color="var(--accent)" isSaving />
+          <div className="progress-items">
+            <ProgressBar label="Needs" spent={monthExpense * 0.6} budget={needsBudget} color="var(--warning)" />
+            <ProgressBar label="Wants" spent={monthExpense * 0.4} budget={wantsBudget} color="var(--primary)" />
+            <ProgressBar label="Savings" spent={savedThisMonth} budget={savingsBudget} color="var(--accent)" isSaving />
+          </div>
         </div>
+
+        {/* Budget Chart */}
+        <BudgetChart />
       </div>
 
       {/* Tax Forecast */}
