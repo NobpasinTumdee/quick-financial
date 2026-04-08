@@ -23,6 +23,66 @@ const THEMES: { id: ThemeName; name: string; description: string; preview: { bg:
     description: 'Cute dark pink aesthetic',
     preview: { bg: '#1A1020', primary: '#F472B6', accent: '#A78BFA' },
   },
+  {
+    id: 'light-green',
+    name: 'Light Green',
+    description: 'Minimal white with green accent',
+    preview: { bg: '#F5F5F0', primary: '#009944', accent: '#01682f' }
+  },
+  {
+    id: 'dark-emerald',
+    name: 'Dark Emerald',
+    description: 'Dark mode with emerald green glow',
+    preview: { bg: '#0f1a14', primary: '#10b981', accent: '#059669' }
+  },
+  {
+    id: 'midnight-blue',
+    name: 'Midnight Blue',
+    description: 'Deep blue professional dashboard',
+    preview: { bg: '#0b1220', primary: '#3b82f6', accent: '#1d4ed8' }
+  },
+  {
+    id: 'sunset-orange',
+    name: 'Sunset Orange',
+    description: 'Warm orange gradient feeling',
+    preview: { bg: '#1a0f0a', primary: '#f97316', accent: '#ea580c' }
+  },
+  {
+    id: 'purple-dream',
+    name: 'Purple Dream',
+    description: 'Soft modern purple UI',
+    preview: { bg: '#140f1f', primary: '#a855f7', accent: '#7e22ce' }
+  },
+  {
+    id: 'rose-pink',
+    name: 'Rose Pink',
+    description: 'Cute modern pink tone',
+    preview: { bg: '#1a0f14', primary: '#ec4899', accent: '#be185d' }
+  },
+  {
+    id: 'cyberpunk',
+    name: 'Cyberpunk',
+    description: 'Neon futuristic style',
+    preview: { bg: '#0a0a0f', primary: '#00f5d4', accent: '#ff00ff' }
+  },
+  {
+    id: 'coffee-brown',
+    name: 'Coffee Brown',
+    description: 'Warm brown cozy UI',
+    preview: { bg: '#1a1410', primary: '#a16207', accent: '#78350f' }
+  },
+  {
+    id: 'ocean-teal',
+    name: 'Ocean Teal',
+    description: 'Fresh ocean blue-green',
+    preview: { bg: '#0a1f1c', primary: '#14b8a6', accent: '#0f766e' }
+  },
+  {
+    id: 'mono-gray',
+    name: 'Mono Gray',
+    description: 'Clean grayscale minimal UI',
+    preview: { bg: '#111111', primary: '#6b7280', accent: '#374151' }
+  },
 ]
 
 export default function Settings() {
@@ -72,6 +132,47 @@ export default function Settings() {
             <div className="settings-id">ID: {user?.id?.slice(0, 8)}...</div>
           </div>
         </div>
+      </div>
+
+      {/* Financial Settings */}
+      <form className="settings-section glass-card" onSubmit={handleSave} data-aos="fade-up" data-aos-delay="100">
+        <h3>Financial Settings</h3>
+
+        <div className="form-group" style={{ marginTop: 16 }}>
+          <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 4 }}>
+            Base Monthly Salary (฿)
+          </label>
+          <input
+            className="input"
+            type="number"
+            step="100"
+            placeholder="Enter your base salary"
+            value={salary}
+            onChange={e => setSalary(e.target.value)}
+          />
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 4 }}>
+            Used for budget planning and tax forecasting
+          </span>
+        </div>
+
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={saving}
+          style={{ marginTop: 16, padding: '12px 24px' }}
+        >
+          {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Changes'}
+        </button>
+      </form>
+
+      {/* Tax Info */}
+      <div className="settings-section glass-card" data-aos="fade-up" data-aos-delay="150">
+        <h3>Tax Information</h3>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          Tax calculations use Thai progressive tax rates with a standard deduction of ฿160,000
+          (personal expenses ฿60,000 + personal allowance ฿100,000). This is an estimate only.
+          Consult a tax professional for precise calculations.
+        </p>
       </div>
 
       {/* Theme Picker */}
@@ -124,47 +225,6 @@ export default function Settings() {
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Financial Settings */}
-      <form className="settings-section glass-card" onSubmit={handleSave} data-aos="fade-up" data-aos-delay="100">
-        <h3>Financial Settings</h3>
-
-        <div className="form-group" style={{ marginTop: 16 }}>
-          <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 4 }}>
-            Base Monthly Salary (฿)
-          </label>
-          <input
-            className="input"
-            type="number"
-            step="100"
-            placeholder="Enter your base salary"
-            value={salary}
-            onChange={e => setSalary(e.target.value)}
-          />
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: 4 }}>
-            Used for budget planning and tax forecasting
-          </span>
-        </div>
-
-        <button
-          type="submit"
-          className="btn btn-primary"
-          disabled={saving}
-          style={{ marginTop: 16, padding: '12px 24px' }}
-        >
-          {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Changes'}
-        </button>
-      </form>
-
-      {/* Tax Info */}
-      <div className="settings-section glass-card" data-aos="fade-up" data-aos-delay="150">
-        <h3>Tax Information</h3>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-          Tax calculations use Thai progressive tax rates with a standard deduction of ฿160,000
-          (personal expenses ฿60,000 + personal allowance ฿100,000). This is an estimate only.
-          Consult a tax professional for precise calculations.
-        </p>
       </div>
 
       {/* Danger Zone */}
