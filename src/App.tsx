@@ -1,27 +1,38 @@
-import { createBrowserRouter } from 'react-router-dom'
-import { RouterProvider } from 'react-router-dom';
-import Home from './Page/Home';
-import Rootlayout from './Layout/Rootlayout';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext'
+import PrivateRoute from './components/PrivateRoute'
+import Rootlayout from './Layout/Rootlayout'
+import Login from './Page/Login'
+import Home from './Page/Home'
+import Wallets from './Page/Wallets'
+import Budget from './Page/Budget'
+import Settings from './Page/Settings'
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Rootlayout />,
-    errorElement: <h1>Not found this page...</h1>,
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    element: <PrivateRoute />,
     children: [
-      { index: true, element: <Home /> },
-      // { path: "other-page1", element: <Other1 /> },
-    ]
-  }
-]);
+      {
+        element: <Rootlayout />,
+        children: [
+          { path: '/', element: <Home /> },
+          { path: '/wallets', element: <Wallets /> },
+          { path: '/budget', element: <Budget /> },
+          { path: '/settings', element: <Settings /> },
+        ],
+      },
+    ],
+  },
+])
 
-function App() {
-
+export default function App() {
   return (
-    <>
+    <AuthProvider>
       <RouterProvider router={router} />
-    </>
+    </AuthProvider>
   )
 }
-
-export default App

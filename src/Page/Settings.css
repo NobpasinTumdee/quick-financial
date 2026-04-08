@@ -1,0 +1,52 @@
+/* ===== Settings Page ===== */
+.settings-page {
+    max-width: 600px;
+}
+
+.settings-section {
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.settings-section h3 {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+}
+
+/* Profile */
+.settings-profile-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.settings-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.settings-email {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 2px;
+}
+
+.settings-id {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Danger Zone */
+.settings-danger {
+    border-color: rgba(255, 107, 107, 0.15);
+}

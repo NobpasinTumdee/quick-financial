@@ -1,0 +1,344 @@
+/* ===== Dashboard ===== */
+.dashboard {
+    max-width: 900px;
+}
+
+/* Net Worth */
+.net-worth-card {
+    padding: 28px;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, rgba(108, 99, 255, 0.1) 0%, rgba(0, 217, 166, 0.05) 100%);
+}
+
+.net-worth-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.net-worth-amount {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--text-main) 0%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.net-worth-wallets {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.net-worth-wallet-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.wallet-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.wallet-balance {
+    margin-left: auto;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+/* Stats */
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    padding: 20px;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.stat-value.income { color: var(--accent); }
+.stat-value.expense { color: var(--danger); }
+
+/* Budget Progress */
+.budget-progress {
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.budget-progress h3 {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+}
+
+.budget-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.progress-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.progress-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progress-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.progress-values {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.progress-bar-track {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-bar-fill.over-budget {
+    animation: pulse-danger 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-danger {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.progress-pct {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: right;
+}
+
+/* Tax Forecast */
+.tax-card {
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.tax-card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+}
+
+.tax-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.tax-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+}
+
+.tax-item.highlight {
+    background: rgba(255, 107, 107, 0.08);
+    border: 1px solid rgba(255, 107, 107, 0.15);
+}
+
+.tax-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.tax-value {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.tax-value.danger {
+    color: var(--danger);
+}
+
+/* Recent Transactions */
+.recent-transactions {
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.recent-transactions h3 {
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+}
+
+.tx-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.tx-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tx-item:last-child {
+    border-bottom: none;
+}
+
+.tx-cat-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.tx-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.tx-cat-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.tx-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tx-amount {
+    font-weight: 600;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.tx-amount.income { color: var(--accent); }
+.tx-amount.expense { color: var(--danger); }
+
+/* FAB */
+.fab-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    z-index: 50;
+}
+
+.fab-button {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.4);
+    transition: all var(--transition);
+}
+
+.fab-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(108, 99, 255, 0.5);
+}
+
+.fab-button.active {
+    background: var(--danger);
+    transform: rotate(45deg);
+}
+
+.fab-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.fab-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fab-option {
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    color: var(--text-main);
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    box-shadow: var(--card-shadow);
+    transition: all var(--transition);
+}
+
+.fab-option:hover {
+    background: var(--card-bg-hover);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .net-worth-amount {
+        font-size: 1.8rem;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .tax-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .fab-container {
+        bottom: calc(var(--mobile-nav-height) + 16px);
+        right: 16px;
+    }
+}
