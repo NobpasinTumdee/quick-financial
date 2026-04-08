@@ -1,5 +1,6 @@
 /* ===== Wallets Page ===== */
 .wallets-page {
+    margin: 0 auto;
     max-width: 900px;
 }
 

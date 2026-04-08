@@ -1,5 +1,6 @@
 /* ===== Budget Page ===== */
 .budget-page {
+    margin: 0 auto;
     max-width: 700px;
 }
 
@@ -27,6 +28,36 @@
     font-weight: 500;
 }
 
+/* Month Selector */
+.budget-month-selector {
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.budget-month-selector h3 {
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+.month-select {
+    flex: 1;
+    min-width: 180px;
+    max-width: 260px;
+}
+
+.month-has-plan {
+    font-size: 0.8rem;
+    color: var(--accent);
+    background: rgba(0, 217, 166, 0.1);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
 /* Sliders */
 .budget-sliders {
     padding: 24px;
@@ -38,6 +69,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .budget-sliders-header h3 {
@@ -97,10 +130,43 @@
     font-size: 0.95rem;
 }
 
-.slider-pct {
+/* Percentage Input */
+.slider-input-group {
     margin-left: auto;
-    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.slider-pct-input {
+    width: 52px;
+    padding: 4px 6px;
+    text-align: right;
     font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-sm);
+    transition: all var(--transition);
+    -moz-appearance: textfield;
+}
+
+.slider-pct-input::-webkit-outer-spin-button,
+.slider-pct-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.slider-pct-input:focus {
+    border-color: var(--input-accent, var(--primary));
+    box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+}
+
+.slider-pct-symbol {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
 }
 
 .slider-desc {
@@ -176,7 +242,7 @@
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* History */
+/* History - Card style with progress bars */
 .budget-history {
     padding: 24px;
     margin-bottom: 20px;
@@ -187,38 +253,114 @@
     margin-bottom: 16px;
 }
 
-.history-table {
+.history-list {
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 12px;
 }
 
-.history-header {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    padding: 10px 0;
-    font-size: 0.8rem;
-    color: var(--text-muted);
+.history-card {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: all var(--transition);
+}
+
+.history-card.future {
+    border-color: rgba(108, 99, 255, 0.2);
+    background: rgba(108, 99, 255, 0.04);
+}
+
+.history-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.history-month-label {
     font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.history-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-bottom: 1px solid var(--border-color);
+    letter-spacing: 0.03em;
 }
 
-.history-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    padding: 12px 0;
-    font-size: 0.9rem;
-    border-bottom: 1px solid var(--border-color);
+.history-badge.current {
+    color: var(--accent);
+    background: rgba(0, 217, 166, 0.12);
 }
 
-.history-row:last-child {
-    border-bottom: none;
+.history-badge.future-badge {
+    color: var(--primary);
+    background: rgba(108, 99, 255, 0.12);
 }
 
-.history-month {
-    font-weight: 500;
+.history-delete-btn {
+    background: none;
+    color: var(--text-muted);
+    font-size: 1.3rem;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition);
+    line-height: 1;
+}
+
+.history-delete-btn:hover {
+    color: var(--danger);
+    background: rgba(255, 107, 107, 0.1);
+}
+
+/* History progress bars */
+.history-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.history-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.history-bar-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    width: 52px;
+    flex-shrink: 0;
+}
+
+.history-bar-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.history-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.history-bar-pct {
+    font-size: 0.8rem;
+    font-weight: 600;
+    width: 36px;
+    text-align: right;
+    flex-shrink: 0;
 }
 
 /* Comparison */
@@ -263,5 +405,14 @@
 @media (max-width: 768px) {
     .comparison-grid {
         grid-template-columns: 1fr;
+    }
+
+    .budget-month-selector {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .month-select {
+        max-width: 100%;
     }
 }

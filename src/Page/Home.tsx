@@ -39,7 +39,8 @@ function formatMoney(n: number): string {
 export default function Home() {
   const { wallets, netWorth } = useWallets()
   const { transactions, categories, getYTDIncome, getCurrentMonthByType, addTransaction, addCategory } = useTransactions()
-  const { currentBudget } = useBudget()
+  const { getBudgetForMonth, currentMonth, currentYear } = useBudget()
+  const currentBudget = getBudgetForMonth(currentMonth, currentYear)
   const { profile } = useProfile()
   const [showModal, setShowModal] = useState(false)
   const [fabOpen, setFabOpen] = useState(false)

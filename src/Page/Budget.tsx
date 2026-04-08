@@ -11,10 +11,30 @@ function formatMoney(n: number): string {
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
+function buildMonthOptions(currentMonth: number, currentYear: number) {
+  const options: { month: number; year: number; label: string }[] = []
+  // 6 months back + current + 6 months forward
+  for (let offset = -6; offset <= 6; offset++) {
+    let m = currentMonth + offset
+    let y = currentYear
+    while (m < 1) { m += 12; y-- }
+    while (m > 12) { m -= 12; y++ }
+    options.push({ month: m, year: y, label: `${MONTH_NAMES[m - 1]} ${y}` })
+  }
+  return options
+}
+
 export default function Budget() {
-  const { currentBudget, budgetHistory, saveBudget } = useBudget()
+  const {
+    budgetHistory, currentMonth, currentYear,
+    getBudgetForMonth, saveBudgetForMonth, deleteBudget, canDelete,
+  } = useBudget()
   const { profile, updateProfile } = useProfile()
   const { getCurrentMonthByType } = useTransactions()
+
+  // Target month for planning
+  const [targetMonth, setTargetMonth] = useState(currentMonth)
+  const [targetYear, setTargetYear] = useState(currentYear)
 
   const [needs, setNeeds] = useState(50)
   const [wants, setWants] = useState(30)
@@ -23,13 +43,22 @@ export default function Budget() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
+  const monthOptions = buildMonthOptions(currentMonth, currentYear)
+
+  // Load budget when target month changes
   useEffect(() => {
-    if (currentBudget) {
-      setNeeds(currentBudget.needs_percent)
-      setWants(currentBudget.wants_percent)
-      setSavings(currentBudget.savings_percent)
+    const budget = getBudgetForMonth(targetMonth, targetYear)
+    if (budget) {
+      setNeeds(budget.needs_percent)
+      setWants(budget.wants_percent)
+      setSavings(budget.savings_percent)
+    } else {
+      setNeeds(50)
+      setWants(30)
+      setSavings(20)
     }
-  }, [currentBudget])
+    setSaved(false)
+  }, [targetMonth, targetYear, budgetHistory]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (profile) setSalary(String(profile.base_salary || ''))
@@ -47,7 +76,6 @@ export default function Budget() {
     if (total > 100) {
       const excess = total - 100
       if (which === 'needs') {
-        // Reduce wants first, then savings
         const reduceW = Math.min(w, excess)
         w -= reduceW
         s -= (excess - reduceW)
@@ -62,9 +90,31 @@ export default function Budget() {
       }
     }
 
-    setNeeds(Math.max(0, n))
-    setWants(Math.max(0, w))
-    setSavings(Math.max(0, s))
+    setNeeds(Math.max(0, Math.round(n)))
+    setWants(Math.max(0, Math.round(w)))
+    setSavings(Math.max(0, Math.round(s)))
+  }
+
+  const handleInputChange = (which: 'needs' | 'wants' | 'savings', raw: string) => {
+    const value = raw === '' ? 0 : parseInt(raw)
+    if (isNaN(value) || value < 0) return
+
+    const others = which === 'needs' ? wants + savings
+      : which === 'wants' ? needs + savings
+      : needs + wants
+    const clamped = Math.min(value, 100 - 0) // allow typing but clamp on total
+
+    if (clamped + others > 100) {
+      // Clamp to max possible
+      const maxAllowed = 100 - others
+      if (which === 'needs') setNeeds(Math.max(0, maxAllowed))
+      else if (which === 'wants') setWants(Math.max(0, maxAllowed))
+      else setSavings(Math.max(0, maxAllowed))
+    } else {
+      if (which === 'needs') setNeeds(clamped)
+      else if (which === 'wants') setWants(clamped)
+      else setSavings(clamped)
+    }
   }
 
   const handleSave = async () => {
@@ -72,14 +122,28 @@ export default function Budget() {
     if (salary && parseFloat(salary) !== (profile?.base_salary ?? 0)) {
       await updateProfile({ base_salary: parseFloat(salary) })
     }
-    await saveBudget(needs, wants, savings)
+    await saveBudgetForMonth(targetMonth, targetYear, needs, wants, savings)
     setSaving(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
 
+  const handleDelete = async (id: string) => {
+    if (confirm('Delete this budget plan?')) {
+      await deleteBudget(id)
+    }
+  }
+
+  const handleMonthSelect = (value: string) => {
+    const [m, y] = value.split('-').map(Number)
+    setTargetMonth(m)
+    setTargetYear(y)
+  }
+
   const salaryNum = parseFloat(salary) || 0
   const { income: monthIncome, expense: monthExpense } = getCurrentMonthByType()
+  const isCurrentMonth = targetMonth === currentMonth && targetYear === currentYear
+  const existingBudget = getBudgetForMonth(targetMonth, targetYear)
 
   return (
     <div className="budget-page page-enter">
@@ -107,10 +171,29 @@ export default function Budget() {
         </div>
       </div>
 
-      {/* Sliders */}
+      {/* Month Selector */}
+      <div className="budget-month-selector glass-card" data-aos="fade-up" data-aos-delay="50">
+        <h3>Planning for</h3>
+        <select
+          className="input month-select"
+          value={`${targetMonth}-${targetYear}`}
+          onChange={e => handleMonthSelect(e.target.value)}
+        >
+          {monthOptions.map(opt => (
+            <option key={`${opt.month}-${opt.year}`} value={`${opt.month}-${opt.year}`}>
+              {opt.label} {opt.month === currentMonth && opt.year === currentYear ? '(Current)' : ''}
+            </option>
+          ))}
+        </select>
+        {existingBudget && (
+          <span className="month-has-plan">Has existing plan</span>
+        )}
+      </div>
+
+      {/* Sliders + Inputs */}
       <div className="budget-sliders glass-card" data-aos="fade-up" data-aos-delay="100">
         <div className="budget-sliders-header">
-          <h3>Allocation Plan</h3>
+          <h3>Allocation — {MONTH_NAMES[targetMonth - 1]} {targetYear}</h3>
           <span className={`budget-total ${needs + wants + savings === 100 ? 'valid' : 'invalid'}`}>
             Total: {needs + wants + savings}%
           </span>
@@ -121,7 +204,8 @@ export default function Budget() {
             label="Needs"
             description="Rent, food, bills, transport"
             value={needs}
-            onChange={v => handleSlider('needs', v)}
+            onSlide={v => handleSlider('needs', v)}
+            onInput={v => handleInputChange('needs', v)}
             color="var(--warning)"
             amount={salaryNum * needs / 100}
           />
@@ -129,7 +213,8 @@ export default function Budget() {
             label="Wants"
             description="Entertainment, dining, shopping"
             value={wants}
-            onChange={v => handleSlider('wants', v)}
+            onSlide={v => handleSlider('wants', v)}
+            onInput={v => handleInputChange('wants', v)}
             color="var(--primary)"
             amount={salaryNum * wants / 100}
           />
@@ -137,7 +222,8 @@ export default function Budget() {
             label="Savings"
             description="Emergency fund, investments"
             value={savings}
-            onChange={v => handleSlider('savings', v)}
+            onSlide={v => handleSlider('savings', v)}
+            onInput={v => handleInputChange('savings', v)}
             color="var(--accent)"
             amount={salaryNum * savings / 100}
           />
@@ -162,63 +248,114 @@ export default function Budget() {
           disabled={saving || needs + wants + savings !== 100}
           style={{ width: '100%', padding: 14, marginTop: 8 }}
         >
-          {saving ? 'Saving...' : saved ? 'Saved!' : 'Save Budget Plan'}
+          {saving ? 'Saving...' : saved ? 'Saved!' : existingBudget ? 'Update Budget Plan' : 'Save Budget Plan'}
         </button>
       </div>
 
-      {/* History */}
+      {/* History with progress bars */}
       <div className="budget-history glass-card" data-aos="fade-up" data-aos-delay="150">
         <h3>Budget History</h3>
         {budgetHistory.length === 0 ? (
           <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 24 }}>No budget history</p>
         ) : (
-          <div className="history-table">
-            <div className="history-header">
-              <span>Month</span>
-              <span>Needs</span>
-              <span>Wants</span>
-              <span>Savings</span>
-            </div>
-            {budgetHistory.map(b => (
-              <div key={b.id} className="history-row">
-                <span className="history-month">{MONTH_NAMES[b.month - 1]} {b.year}</span>
-                <span>{b.needs_percent}%</span>
-                <span>{b.wants_percent}%</span>
-                <span>{b.savings_percent}%</span>
-              </div>
-            ))}
+          <div className="history-list">
+            {budgetHistory.map(b => {
+              const isFuture = b.year > currentYear || (b.year === currentYear && b.month > currentMonth)
+              return (
+                <div key={b.id} className={`history-card ${isFuture ? 'future' : ''}`}>
+                  <div className="history-card-header">
+                    <span className="history-month-label">
+                      {MONTH_NAMES[b.month - 1]} {b.year}
+                      {b.month === currentMonth && b.year === currentYear && (
+                        <span className="history-badge current">Current</span>
+                      )}
+                      {isFuture && (
+                        <span className="history-badge future-badge">Planned</span>
+                      )}
+                    </span>
+                    {canDelete(b) && (
+                      <button
+                        className="history-delete-btn"
+                        onClick={() => handleDelete(b.id)}
+                        title="Delete plan"
+                      >
+                        &times;
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Progress bars */}
+                  <div className="history-bars">
+                    <div className="history-bar-row">
+                      <span className="history-bar-label">Needs</span>
+                      <div className="history-bar-track">
+                        <div
+                          className="history-bar-fill"
+                          style={{ width: `${b.needs_percent}%`, background: 'var(--warning)' }}
+                        />
+                      </div>
+                      <span className="history-bar-pct">{b.needs_percent}%</span>
+                    </div>
+                    <div className="history-bar-row">
+                      <span className="history-bar-label">Wants</span>
+                      <div className="history-bar-track">
+                        <div
+                          className="history-bar-fill"
+                          style={{ width: `${b.wants_percent}%`, background: 'var(--primary)' }}
+                        />
+                      </div>
+                      <span className="history-bar-pct">{b.wants_percent}%</span>
+                    </div>
+                    <div className="history-bar-row">
+                      <span className="history-bar-label">Savings</span>
+                      <div className="history-bar-track">
+                        <div
+                          className="history-bar-fill"
+                          style={{ width: `${b.savings_percent}%`, background: 'var(--accent)' }}
+                        />
+                      </div>
+                      <span className="history-bar-pct">{b.savings_percent}%</span>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>
 
-      {/* Actual vs Plan */}
-      <div className="budget-comparison glass-card" data-aos="fade-up" data-aos-delay="200">
-        <h3>This Month: Plan vs Actual</h3>
-        <div className="comparison-grid">
-          <div className="comparison-item">
-            <span className="comparison-label">Planned Income</span>
-            <span className="comparison-value">฿{formatMoney(salaryNum)}</span>
-          </div>
-          <div className="comparison-item">
-            <span className="comparison-label">Actual Income</span>
-            <span className="comparison-value income">฿{formatMoney(monthIncome)}</span>
-          </div>
-          <div className="comparison-item">
-            <span className="comparison-label">Planned Expense</span>
-            <span className="comparison-value">฿{formatMoney(salaryNum * (needs + wants) / 100)}</span>
-          </div>
-          <div className="comparison-item">
-            <span className="comparison-label">Actual Expense</span>
-            <span className="comparison-value expense">฿{formatMoney(monthExpense)}</span>
+      {/* Actual vs Plan - only show for current month */}
+      {isCurrentMonth && (
+        <div className="budget-comparison glass-card" data-aos="fade-up" data-aos-delay="200">
+          <h3>This Month: Plan vs Actual</h3>
+          <div className="comparison-grid">
+            <div className="comparison-item">
+              <span className="comparison-label">Planned Income</span>
+              <span className="comparison-value">฿{formatMoney(salaryNum)}</span>
+            </div>
+            <div className="comparison-item">
+              <span className="comparison-label">Actual Income</span>
+              <span className="comparison-value income">฿{formatMoney(monthIncome)}</span>
+            </div>
+            <div className="comparison-item">
+              <span className="comparison-label">Planned Expense</span>
+              <span className="comparison-value">฿{formatMoney(salaryNum * (needs + wants) / 100)}</span>
+            </div>
+            <div className="comparison-item">
+              <span className="comparison-label">Actual Expense</span>
+              <span className="comparison-value expense">฿{formatMoney(monthExpense)}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
 
-function SliderRow({ label, description, value, onChange, color, amount }: {
-  label: string; description: string; value: number; onChange: (v: number) => void; color: string; amount: number
+function SliderRow({ label, description, value, onSlide, onInput, color, amount }: {
+  label: string; description: string; value: number
+  onSlide: (v: number) => void; onInput: (v: string) => void
+  color: string; amount: number
 }) {
   return (
     <div className="slider-row">
@@ -226,7 +363,18 @@ function SliderRow({ label, description, value, onChange, color, amount }: {
         <div className="slider-label-row">
           <span className="slider-dot" style={{ background: color }} />
           <span className="slider-label">{label}</span>
-          <span className="slider-pct">{value}%</span>
+          <div className="slider-input-group">
+            <input
+              type="number"
+              className="slider-pct-input"
+              value={value}
+              min={0}
+              max={100}
+              onChange={e => onInput(e.target.value)}
+              style={{ '--input-accent': color } as React.CSSProperties}
+            />
+            <span className="slider-pct-symbol">%</span>
+          </div>
         </div>
         <span className="slider-desc">{description}</span>
         <span className="slider-amount">฿{amount.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</span>
@@ -236,7 +384,7 @@ function SliderRow({ label, description, value, onChange, color, amount }: {
         min="0"
         max="100"
         value={value}
-        onChange={e => onChange(parseInt(e.target.value))}
+        onChange={e => onSlide(parseInt(e.target.value))}
         className="budget-slider"
         style={{ '--slider-color': color, '--slider-pct': `${value}%` } as React.CSSProperties}
       />

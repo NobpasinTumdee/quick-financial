@@ -14,7 +14,6 @@ export interface BudgetPlan {
 
 export function useBudget() {
   const { user } = useAuth()
-  const [currentBudget, setCurrentBudget] = useState<BudgetPlan | null>(null)
   const [budgetHistory, setBudgetHistory] = useState<BudgetPlan[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -26,49 +25,42 @@ export function useBudget() {
     if (!user) return
     setLoading(true)
 
-    // Current month budget
-    const { data: current } = await supabase
-      .from('BudgetPlan')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('month', currentMonth)
-      .eq('year', currentYear)
-      .single()
-
-    setCurrentBudget(current)
-
-    // Last 6 months history
     const { data: history } = await supabase
       .from('BudgetPlan')
       .select('*')
       .eq('user_id', user.id)
       .order('year', { ascending: false })
       .order('month', { ascending: false })
-      .limit(6)
+      .limit(12)
 
     setBudgetHistory(history ?? [])
     setLoading(false)
-  }, [user, currentMonth, currentYear])
+  }, [user])
 
   useEffect(() => { fetchBudget() }, [fetchBudget])
 
-  const saveBudget = async (needs: number, wants: number, savings: number) => {
+  const getBudgetForMonth = (month: number, year: number) => {
+    return budgetHistory.find(b => b.month === month && b.year === year) ?? null
+  }
+
+  const saveBudgetForMonth = async (month: number, year: number, needs: number, wants: number, savings: number) => {
     if (!user) return
 
+    const existing = getBudgetForMonth(month, year)
     const payload = {
       user_id: user.id,
-      month: currentMonth,
-      year: currentYear,
+      month,
+      year,
       needs_percent: needs,
       wants_percent: wants,
       savings_percent: savings,
     }
 
-    if (currentBudget) {
+    if (existing) {
       const { error } = await supabase
         .from('BudgetPlan')
         .update(payload)
-        .eq('id', currentBudget.id)
+        .eq('id', existing.id)
       if (!error) await fetchBudget()
       return { error }
     } else {
@@ -80,5 +72,26 @@ export function useBudget() {
     }
   }
 
-  return { currentBudget, budgetHistory, loading, saveBudget, refetch: fetchBudget }
+  const deleteBudget = async (id: string) => {
+    const { error } = await supabase
+      .from('BudgetPlan')
+      .delete()
+      .eq('id', id)
+    if (!error) await fetchBudget()
+    return { error }
+  }
+
+  const canDelete = (b: BudgetPlan) => {
+    // Can only delete current month or future
+    if (b.year > currentYear) return true
+    if (b.year === currentYear && b.month >= currentMonth) return true
+    return false
+  }
+
+  return {
+    budgetHistory, loading,
+    currentMonth, currentYear,
+    getBudgetForMonth, saveBudgetForMonth, deleteBudget, canDelete,
+    refetch: fetchBudget,
+  }
 }
