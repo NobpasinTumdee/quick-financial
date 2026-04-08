@@ -98,7 +98,8 @@
     z-index: 100;
     border-radius: 0;
     border-top: 1px solid var(--glass-border);
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    border-radius: 50px;
+    margin: 0 1rem 0.8rem;
 }
 
 .mobile-nav-item {
@@ -117,10 +118,12 @@
 
 .mobile-nav-item.active {
     color: var(--primary);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
 }
 
 .mobile-nav-icon {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
 }
 
 .mobile-nav-label {
