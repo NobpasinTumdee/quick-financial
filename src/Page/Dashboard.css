@@ -1,7 +1,7 @@
 /* ===== Dashboard ===== */
 .dashboard {
     margin: 0 auto;
-    max-width: 900px;
+    max-width: 1300px;
 }
 
 /* Net Worth */
@@ -283,13 +283,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.4);
+    box-shadow: 0 4px 20px var(--card-border);
     transition: all var(--transition);
 }
 
 .fab-button:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 25px rgba(108, 99, 255, 0.5);
+    box-shadow: 0 6px 25px var(--card-border);
 }
 
 .fab-button.active {
