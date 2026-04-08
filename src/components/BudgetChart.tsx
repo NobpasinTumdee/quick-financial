@@ -52,9 +52,29 @@ export default function BudgetChart() {
       const lastDay = new Date(lastMonth.year, lastMonth.month + 1, 0).getDate()
       const endDate = `${lastMonth.year}-${String(lastMonth.month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
 
+      // Get user's wallet IDs to filter transactions by current user only
+      const { data: userWallets } = await supabase
+        .from('Wallet')
+        .select('id')
+        .eq('user_id', user.id)
+
+      const walletIds = (userWallets ?? []).map(w => w.id)
+
+      if (walletIds.length === 0) {
+        if (!cancelled) {
+          setMonthsData(months.map(m => ({
+            label: `${MONTH_NAMES[m.month]} ${String(m.year).slice(2)}`,
+            needs: 0, wants: 0, savings: 0,
+          })))
+          setLoading(false)
+        }
+        return
+      }
+
       const { data: txs } = await supabase
         .from('Transaction')
         .select('type, amount, transaction_date')
+        .in('wallet_id', walletIds)
         .gte('transaction_date', startDate)
         .lte('transaction_date', endDate)
         .in('type', ['INCOME', 'EXPENSE'])

@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { supabase } from '../supabase/supabaseClient'
+import { useAuth } from '../context/AuthContext'
 
 interface ExportModalProps {
   onClose: () => void
 }
 
 export default function ExportModal({ onClose }: ExportModalProps) {
+  const { user } = useAuth()
   const now = new Date()
   const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
 
@@ -29,9 +31,24 @@ export default function ExportModal({ onClose }: ExportModalProps) {
       const lastDay = new Date(toYear, toMon, 0).getDate()
       const endDate = `${toMonth}-${String(lastDay).padStart(2, '0')}`
 
+      // Get user's wallet IDs to filter transactions by current user only
+      const { data: userWallets } = await supabase
+        .from('Wallet')
+        .select('id')
+        .eq('user_id', user!.id)
+
+      const walletIds = (userWallets ?? []).map(w => w.id)
+
+      if (walletIds.length === 0) {
+        setError('ไม่พบข้อมูลในช่วงเวลาที่เลือก')
+        setLoading(false)
+        return
+      }
+
       const { data, error: fetchError } = await supabase
         .from('Transaction')
         .select('*, category:Category(name), wallet:Wallet(name)')
+        .in('wallet_id', walletIds)
         .gte('transaction_date', startDate)
         .lte('transaction_date', endDate)
         .order('transaction_date', { ascending: true })

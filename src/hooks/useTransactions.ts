@@ -33,11 +33,25 @@ export function useTransactions(walletId?: string) {
     if (!user) return
     setLoading(true)
 
+    // Get user's wallet IDs to filter transactions by current user only
+    const { data: userWallets } = await supabase
+      .from('Wallet')
+      .select('id')
+      .eq('user_id', user.id)
+
+    const walletIds = (userWallets ?? []).map(w => w.id)
+
+    if (walletIds.length === 0) {
+      setTransactions([])
+      setLoading(false)
+      return
+    }
+
     let query = supabase
       .from('Transaction')
       .select('*, category:Category(name, color, icon_name), wallet:Wallet(name)')
+      .in('wallet_id', walletIds)
       .order('transaction_date', { ascending: false })
-      .limit(100)
 
     if (walletId) {
       query = query.eq('wallet_id', walletId)
