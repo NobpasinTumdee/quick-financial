@@ -197,6 +197,62 @@
     to { transform: rotate(360deg); }
 }
 
+/* Divider */
+.login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+}
+
+/* Google Button */
+.login-google-btn {
+    width: 100%;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    transition: all var(--transition);
+}
+
+.login-google-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--text-muted);
+}
+
+/* Forgot password / back link */
+.login-link-btn {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-size: 0.82rem;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.2s;
+}
+
+.login-link-btn:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
 .loading-spinner {
     width: 40px;
     height: 40px;
