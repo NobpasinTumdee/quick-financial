@@ -1,42 +1,156 @@
- Project Structure
-```
-  src/
-  ├── main.tsx              — Entry point with AOS init
-  ├── App.tsx               — Router with public/private routes
-  ├── Root.css              — Global CSS (dark glassmorphism theme)
-  ├── context/
-  │   └── AuthContext.tsx    — Supabase Auth state management
-  ├── components/
-  │   ├── PrivateRoute.tsx   — Auth guard for protected routes
-  │   └── TransactionModal.tsx — Add income/expense modal
-  ├── hooks/
-  │   ├── useProfile.ts     — UserProfile CRUD
-  │   ├── useWallets.ts     — Wallet CRUD + transfer
-  │   ├── useTransactions.ts — Transaction/Category CRUD + YTD/monthly aggregation
-  │   └── useBudget.ts      — BudgetPlan CRUD + history
-  ├── Layout/
-  │   ├── Rootlayout.tsx    — App shell with sidebar + main content
-  │   ├── Sidebar.tsx       — Desktop sidebar + mobile bottom nav
-  │   └── Layout.css        — Layout styles (responsive)
-  └── Page/
-      ├── Login.tsx + Login.css       — /login (sign in/register with smooth toggle)
-      ├── Home.tsx + Dashboard.css    — / (net worth, budget progress, tax forecast, FAB)
-      ├── Wallets.tsx + Wallets.css   — /wallets (wallet cards, history, transfer)
-      ├── Budget.tsx + Budget.css     — /budget (salary, 3 sliders = 100%, history)
-      └── Settings.tsx + Settings.css — /settings (profile, salary edit, logout)
-```
-  Key Features
+<p align="center">
+  <img src="public/quickfinancialPNG.png" alt="Quick Financial Logo" width="120" />
+</p>
 
-  - Auth: Supabase email/password with session persistence, auto-redirect
-  - Dashboard: Net worth from all wallets, monthly income/expense/saved stats, budget progress bars
-  (Needs/Wants/Savings), Thai progressive tax forecast (with ฿160k deduction), recent transactions, FAB for
-  quick add
-  - Wallets: Card grid, click to view transaction history, add wallet (name/balance/color), transfer between
-  wallets, delete wallet
-  - Budget: Editable salary, 3 linked sliders auto-balancing to 100%, visual stacked bar, save to BudgetPlan,
-   6-month history table, plan vs actual comparison
-  - Settings: Profile info, salary edit, tax info, logout
-  - Design: Dark glassmorphism (backdrop-filter: blur, rgba backgrounds, subtle borders), AOS scroll
-  animations, responsive (sidebar on desktop, bottom nav on mobile)
+<h1 align="center">Quick Financial</h1>
 
-  Run npm run dev to start the dev server.
+<p align="center">
+  <strong>Personal Finance & Wealth Management</strong><br/>
+  จัดการเงินส่วนบุคคลอย่างชาญฉลาด — ติดตามรายรับรายจ่าย วางแผนงบประมาณ และคาดการณ์ภาษีในที่เดียว
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Supabase-BaaS-3FCF8E?logo=supabase&logoColor=white" alt="Supabase" />
+  <img src="https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white" alt="Vite" />
+</p>
+
+---
+
+## Features
+
+### Dashboard
+- **Net Worth** — ยอดรวมจากทุกกระเป๋าเงินแบบ real-time
+- **Monthly Overview** — สรุปรายรับ, รายจ่าย และเงินออมของเดือนปัจจุบัน
+- **Budget Progress** — แถบแสดงความคืบหน้า Needs / Wants / Savings เทียบกับแผนที่ตั้งไว้
+- **Tax Forecast** — คำนวณภาษีเงินได้บุคคลธรรมดา (อัตราก้าวหน้าไทย) จากรายรับ YTD
+- **Quick Add (FAB)** — เพิ่มรายการรายรับ/รายจ่ายได้ทันทีผ่าน Floating Action Button
+
+### Wallets & Transactions
+- จัดการกระเป๋าเงินหลายใบ (สร้าง, แก้ไข, ลบ)
+- ดูประวัติ Transaction ของแต่ละกระเป๋า
+- โอนเงินระหว่างกระเป๋า (Transfer) พร้อมบันทึก Transaction อัตโนมัติ
+- สร้าง Category สำหรับจัดหมวดหมู่รายรับ/รายจ่าย
+
+### Budget Planner
+- ตั้งค่าเงินเดือนฐาน (Base Salary)
+- ปรับสัดส่วน Needs / Wants / Savings ด้วย Slider หรือพิมพ์ตัวเลขโดยตรง (รวมกันต้อง = 100%)
+- วางแผนงบประมาณล่วงหน้าได้สูงสุด 6 เดือน
+- ดูประวัติแผนงบย้อนหลังพร้อม Progress Bar
+- เปรียบเทียบ Plan vs Actual ของเดือนปัจจุบัน
+
+### Multi-Theme
+- **Dark** — โทนเข้มพร้อม accent สีม่วง + เขียว
+- **Light** — มินิมอลขาวสะอาดตัดด้วยเขียว `#009944`
+- **Pink Cute** — โทนชมพูม่วงสุดน่ารัก
+- ใช้สีตามระบบ (System Preference) ได้ หรือเลือกเอง
+- เก็บค่าใน Cookie — เปิดใหม่ก็ยังเป็นธีมเดิม
+
+### Authentication & Security
+- Supabase Auth (Email/Password) พร้อม Session Persistence
+- Row Level Security (RLS) — ข้อมูลใครข้อมูลมัน ดูข้ามบัญชีไม่ได้
+- Protected Routes — เข้าหน้าหลักไม่ได้ถ้ายังไม่ Login
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 19 + TypeScript |
+| **Build Tool** | Vite 8 + React Compiler |
+| **Routing** | React Router DOM v7 |
+| **Styling** | Plain CSS + CSS Variables + Glassmorphism |
+| **Animation** | AOS (Animate On Scroll) |
+| **Backend** | Supabase (Auth + PostgreSQL + RLS) |
+| **Deployment** | Netlify (SPA `_redirects`) |
+
+---
+
+## Project Structure
+
+```
+src/
+├── main.tsx                        # Entry point, AOS init
+├── App.tsx                         # Router + Providers
+├── Root.css                        # Global CSS, 3 theme variables
+│
+├── context/
+│   ├── AuthContext.tsx              # Supabase session management
+│   └── ThemeContext.tsx             # Theme state + cookie persistence
+│
+├── components/
+│   ├── PrivateRoute.tsx            # Auth guard
+│   └── TransactionModal.tsx        # Add income/expense modal
+│
+├── hooks/
+│   ├── useProfile.ts               # UserProfile CRUD
+│   ├── useWallets.ts               # Wallet CRUD + transfer
+│   ├── useTransactions.ts          # Transaction + Category + aggregation
+│   └── useBudget.ts                # BudgetPlan CRUD + history
+│
+├── Layout/
+│   ├── Rootlayout.tsx              # App shell
+│   ├── Sidebar.tsx                 # Desktop sidebar + mobile bottom nav
+│   └── Layout.css
+│
+└── Page/
+    ├── Login.tsx      + Login.css       # /login
+    ├── Home.tsx       + Dashboard.css   # / (Dashboard)
+    ├── Wallets.tsx    + Wallets.css     # /wallets
+    ├── Budget.tsx     + Budget.css      # /budget
+    └── Settings.tsx   + Settings.css    # /settings
+```
+
+---
+
+## Database Schema (Supabase)
+
+```
+UserProfile    (id → auth.users, base_salary)
+Wallet         (id, user_id, name, balance, icon_color)
+Category       (id, user_id, name, type [INCOME|EXPENSE|TRANSFER], icon_name, color)
+Transaction    (id, wallet_id, category_id, type, amount, transaction_date, note)
+BudgetPlan     (id, user_id, month, year, needs_percent, wants_percent, savings_percent)
+```
+
+> ทุกตารางมี RLS ผูกกับ `auth.uid()` — ผู้ใช้เห็นเฉพาะข้อมูลของตัวเอง
+
+---
+
+## Getting Started
+
+```bash
+# Clone
+git clone https://github.com/your-username/quick-financial.git
+cd quick-financial
+
+# Install dependencies
+npm install
+
+# Set environment variables
+cp .env.example .env
+# แก้ไข VITE_SUPABASE_URL และ VITE_SUPABASE_ANON_KEY
+
+# Start dev server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+---
+
+## Environment Variables
+
+| Variable | Description |
+|----------|------------|
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous (public) key |
+
+---
+
+<p align="center">
+  Built with &#9829; using React + Supabase
+</p>
