@@ -83,6 +83,66 @@ const THEMES: { id: ThemeName; name: string; description: string; preview: { bg:
     description: 'Clean grayscale minimal UI',
     preview: { bg: '#111111', primary: '#6b7280', accent: '#374151' }
   },
+  {
+    id: 'neon-blue',
+    name: 'Neon Blue',
+    description: 'Bright neon futuristic blue',
+    preview: { bg: '#050816', primary: '#00E5FF', accent: '#2979FF' },
+  },
+  {
+    id: 'forest',
+    name: 'Forest',
+    description: 'Natural deep green tone',
+    preview: { bg: '#0c1f17', primary: '#22c55e', accent: '#166534' },
+  },
+  {
+    id: 'gold-luxury',
+    name: 'Gold Luxury',
+    description: 'Premium gold and black',
+    preview: { bg: '#0f0f0f', primary: '#d4af37', accent: '#b8962e' },
+  },
+  {
+    id: 'ice-blue',
+    name: 'Ice Blue',
+    description: 'Cool icy blue minimal',
+    preview: { bg: '#0a1a2f', primary: '#38bdf8', accent: '#0ea5e9' },
+  },
+  {
+    id: 'mint-fresh',
+    name: 'Mint Fresh',
+    description: 'Fresh mint modern UI',
+    preview: { bg: '#0f1f1a', primary: '#34d399', accent: '#10b981' },
+  },
+  {
+    id: 'lavender-soft',
+    name: 'Lavender Soft',
+    description: 'Soft pastel purple',
+    preview: { bg: '#1a1625', primary: '#c084fc', accent: '#a855f7' },
+  },
+  {
+    id: 'red-dark',
+    name: 'Dark Red',
+    description: 'Strong red dark mode',
+    preview: { bg: '#140a0a', primary: '#ef4444', accent: '#b91c1c' },
+  },
+  {
+    id: 'sky-light',
+    name: 'Sky Light',
+    description: 'Light sky blue theme',
+    preview: { bg: '#f0f9ff', primary: '#0ea5e9', accent: '#0284c7' },
+  },
+  {
+    id: 'terminal-green',
+    name: 'Terminal',
+    description: 'Classic hacker terminal',
+    preview: { bg: '#000000', primary: '#00ff9c', accent: '#00cc7a' },
+  },
+  {
+    id: 'sand-beige',
+    name: 'Sand Beige',
+    description: 'Warm neutral minimal',
+    preview: { bg: '#f5efe6', primary: '#c2a878', accent: '#a68a64' },
+  },
 ]
 
 export default function Settings() {
@@ -93,6 +153,7 @@ export default function Settings() {
   const [salary, setSalary] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [showAllThemes, setShowAllThemes] = useState(false)
 
   useEffect(() => {
     if (profile) setSalary(String(profile.base_salary || ''))
@@ -191,39 +252,54 @@ export default function Settings() {
         </label>
 
         {/* Theme cards */}
-        <div className="theme-grid">
-          {THEMES.map(t => (
-            <button
-              key={t.id}
-              className={`theme-card ${theme === t.id && !isSystem ? 'active' : ''} ${isSystem ? 'system-mode' : ''}`}
-              onClick={() => setTheme(t.id)}
-              disabled={isSystem}
-            >
-              {/* Mini preview */}
-              <div className="theme-preview" style={{ background: t.preview.bg }}>
-                <div className="theme-preview-sidebar" style={{ background: t.id === 'light' ? '#fff' : `color-mix(in srgb, ${t.preview.bg} 80%, #fff)`, borderRight: `1px solid ${t.id === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.1)'}` }}>
-                  <div className="theme-preview-dot" style={{ background: t.preview.primary }} />
-                  <div className="theme-preview-line" style={{ background: t.id === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)' }} />
-                  <div className="theme-preview-line short" style={{ background: t.id === 'light' ? 'rgba(0,0,0,0.07)' : 'rgba(255,255,255,0.06)' }} />
-                </div>
-                <div className="theme-preview-content">
-                  <div className="theme-preview-card" style={{ background: t.id === 'light' ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)', borderColor: t.id === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.08)' }}>
-                    <div className="theme-preview-bar" style={{ background: t.preview.primary }} />
-                    <div className="theme-preview-bar accent" style={{ background: t.preview.accent }} />
+        <div className={`theme-list-wrapper ${showAllThemes ? 'expanded' : ''}`}>
+          <div className="theme-grid">
+            {THEMES.map(t => (
+              <button
+                key={t.id}
+                className={`theme-card ${theme === t.id && !isSystem ? 'active' : ''} ${isSystem ? 'system-mode' : ''}`}
+                onClick={() => setTheme(t.id)}
+                disabled={isSystem}
+              >
+                {/* Mini preview */}
+                <div className="theme-preview" style={{ background: t.preview.bg }}>
+                  <div className="theme-preview-sidebar" style={{ background: t.id === 'light' ? '#fff' : `color-mix(in srgb, ${t.preview.bg} 80%, #fff)`, borderRight: `1px solid ${t.id === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.1)'}` }}>
+                    <div className="theme-preview-dot" style={{ background: t.preview.primary }} />
+                    <div className="theme-preview-line" style={{ background: t.id === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)' }} />
+                    <div className="theme-preview-line short" style={{ background: t.id === 'light' ? 'rgba(0,0,0,0.07)' : 'rgba(255,255,255,0.06)' }} />
+                  </div>
+                  <div className="theme-preview-content">
+                    <div className="theme-preview-card" style={{ background: t.id === 'light' ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)', borderColor: t.id === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.08)' }}>
+                      <div className="theme-preview-bar" style={{ background: t.preview.primary }} />
+                      <div className="theme-preview-bar accent" style={{ background: t.preview.accent }} />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="theme-card-info">
-                <span className="theme-card-name">{t.name}</span>
-                <span className="theme-card-desc">{t.description}</span>
-              </div>
+                <div className="theme-card-info">
+                  <span className="theme-card-name">{t.name}</span>
+                  <span className="theme-card-desc">{t.description}</span>
+                </div>
 
-              {theme === t.id && !isSystem && (
-                <div className="theme-check">&#10003;</div>
-              )}
-            </button>
-          ))}
+                {theme === t.id && !isSystem && (
+                  <div className="theme-check">&#10003;</div>
+                )}
+              </button>
+            ))}
+          </div>
+          
+          {!showAllThemes && (
+            <div className="theme-list-overlay">
+              <button 
+                type="button" 
+                className="theme-expand-btn"
+                onClick={() => setShowAllThemes(true)}
+              >
+                <span>Show more themes</span>
+                <span style={{ fontSize: '0.75rem' }}>▼</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
