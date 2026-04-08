@@ -9,7 +9,11 @@ function formatMoney(n: number): string {
   return n.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-const COLORS = ['#6C63FF', '#00D9A6', '#FF6B6B', '#FFB347', '#4ECB71', '#FF69B4', '#00BFFF', '#FF8C00']
+const COLORS = [
+  '#6C63FF', '#00D9A6', '#FF6B6B', '#FFB347', '#4ECB71', '#FF69B4', '#00BFFF', '#FF8C00',
+  '#8B5CF6', '#EC4899', '#14B8A6', '#F59E0B', '#3B82F6', '#EF4444', '#10B981', '#F97316',
+  '#06B6D4', '#A855F7', '#84CC16', '#E11D48',
+]
 
 export default function Wallets() {
   const { wallets, netWorth, addWallet, deleteWallet, transferBetweenWallets, refetch: refetchWallets } = useWallets()
@@ -17,6 +21,8 @@ export default function Wallets() {
   const [showAddWallet, setShowAddWallet] = useState(false)
   const [showTransfer, setShowTransfer] = useState(false)
   const [showTxModal, setShowTxModal] = useState(false)
+  const [showCategories, setShowCategories] = useState(false)
+  const [catTab, setCatTab] = useState<'EXPENSE' | 'INCOME'>('EXPENSE')
 
   // Add wallet form
   const [newName, setNewName] = useState('')
@@ -66,6 +72,7 @@ export default function Wallets() {
           <p data-aos="fade-right" data-aos-delay="50">Manage your wallets & transactions</p>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-ghost" onClick={() => setShowCategories(true)}>Categories</button>
           <button className="btn btn-ghost" onClick={() => setShowTransfer(true)}>Transfer</button>
           <button className="btn btn-primary" onClick={() => setShowAddWallet(true)}>+ Add Wallet</button>
         </div>
@@ -152,7 +159,7 @@ export default function Wallets() {
               </div>
               <div className="form-group">
                 <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 4 }}>Color</label>
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                   {COLORS.map(c => (
                     <button
                       key={c}
@@ -162,6 +169,18 @@ export default function Wallets() {
                       onClick={() => setNewColor(c)}
                     />
                   ))}
+                  <label
+                    className={`color-swatch ${!COLORS.includes(newColor) ? 'active' : ''}`}
+                    style={{ background: newColor, position: 'relative', overflow: 'hidden' }}
+                    title="Custom color"
+                  >
+                    <input
+                      type="color"
+                      value={newColor}
+                      onChange={e => setNewColor(e.target.value)}
+                      style={{ position: 'absolute', inset: 0, opacity: 0, width: '100%', height: '100%', cursor: 'pointer' }}
+                    />
+                  </label>
                 </div>
               </div>
               <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: 14 }}>Create Wallet</button>
@@ -197,6 +216,51 @@ export default function Wallets() {
               </div>
               <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: 14 }}>Transfer</button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Categories Modal */}
+      {showCategories && (
+        <div className="modal-overlay" onClick={() => setShowCategories(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 600 }}>Categories</h2>
+              <button onClick={() => setShowCategories(false)} className="btn btn-ghost" style={{ padding: '6px 10px', fontSize: '1.1rem' }}>&times;</button>
+            </div>
+
+            <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
+              <button
+                className={`btn ${catTab === 'EXPENSE' ? 'btn-danger' : 'btn-ghost'}`}
+                style={{ flex: 1 }}
+                onClick={() => setCatTab('EXPENSE')}
+              >
+                Expense
+              </button>
+              <button
+                className={`btn ${catTab === 'INCOME' ? 'btn-accent' : 'btn-ghost'}`}
+                style={{ flex: 1 }}
+                onClick={() => setCatTab('INCOME')}
+              >
+                Income
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: '50vh', overflowY: 'auto' }}>
+              {categories.filter(c => c.type === catTab).length === 0 ? (
+                <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 24 }}>
+                  No {catTab.toLowerCase()} categories yet
+                </p>
+              ) : (
+                categories.filter(c => c.type === catTab).map(cat => (
+                  <div key={cat.id} className="cat-list-item glass-card" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px' }}>
+                    <div style={{ width: 12, height: 12, borderRadius: '50%', background: cat.color, flexShrink: 0 }} />
+                    <span style={{ flex: 1, fontSize: '0.95rem' }}>{cat.name}</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>{cat.type}</span>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       )}
