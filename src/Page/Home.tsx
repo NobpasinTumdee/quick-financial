@@ -138,7 +138,7 @@ export default function Home() {
       </div>
 
       {/* Recent Transactions */}
-      <div className="recent-transactions glass-card" data-aos="fade-up" data-aos-delay="250">
+      <div className="recent-transactions glass-card" data-aos="fade-down" data-aos-delay="250">
         <h3>Recent Transactions</h3>
         {transactions.length === 0 ? (
           <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 24 }}>No transactions yet</p>

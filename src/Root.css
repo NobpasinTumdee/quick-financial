@@ -1,11 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-:root {
+/* ========================================
+   THEME: Dark (default)
+   ======================================== */
+:root,
+[data-theme="dark"] {
     --primary: #6C63FF;
     --primary-hover: #5A52E0;
     --primary-light: rgba(108, 99, 255, 0.15);
+    --primary-btn-text: #fff;
     --accent: #00D9A6;
     --accent-hover: #00C495;
+    --accent-text: #0A0A0F;
     --danger: #FF6B6B;
     --warning: #FFB347;
     --success: #4ECB71;
@@ -32,6 +38,12 @@
     --input-border: rgba(255, 255, 255, 0.12);
     --input-focus: rgba(108, 99, 255, 0.4);
 
+    --modal-overlay: rgba(0, 0, 0, 0.6);
+    --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.2);
+    --bar-segment-text: rgba(0, 0, 0, 0.7);
+    --selection-text: #fff;
+
     --sidebar-width: 260px;
     --navbar-height: 64px;
     --mobile-nav-height: 70px;
@@ -44,6 +56,97 @@
     --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ========================================
+   THEME: Light — minimal white + green #009944
+   ======================================== */
+[data-theme="light"] {
+    --primary: #009944;
+    --primary-hover: #007a36;
+    --primary-light: rgba(0, 153, 68, 0.10);
+    --primary-btn-text: #fff;
+    --accent: #01682f;
+    --accent-hover: #007a36;
+    --accent-text: #fff;
+    --danger: #E53935;
+    --warning: #F57C00;
+    --success: #2E7D32;
+
+    --bg-color: #F5F5F0;
+    --bg-secondary: #FFFFFF;
+    --bg-tertiary: #EDEDEA;
+
+    --card-bg: rgba(255, 255, 255, 0.75);
+    --card-bg-hover: rgba(255, 255, 255, 0.9);
+    --card-border: rgba(0, 0, 0, 0.06);
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-blur: 16px;
+
+    --text-main: #1A1A1A;
+    --text-secondary: #555555;
+    --text-muted: #999999;
+
+    --border-color: rgba(0, 0, 0, 0.08);
+    --input-bg: rgba(0, 0, 0, 0.03);
+    --input-border: rgba(0, 0, 0, 0.12);
+    --input-focus: rgba(0, 153, 68, 0.25);
+
+    --modal-overlay: rgba(0, 0, 0, 0.3);
+    --scrollbar-thumb: rgba(0, 0, 0, 0.12);
+    --scrollbar-thumb-hover: rgba(0, 0, 0, 0.22);
+    --bar-segment-text: rgba(255, 255, 255, 0.9);
+    --selection-text: #fff;
+}
+
+/* ========================================
+   THEME: Pink Cute
+   ======================================== */
+[data-theme="pink"] {
+    --primary: #F472B6;
+    --primary-hover: #EC4899;
+    --primary-light: rgba(244, 114, 182, 0.15);
+    --primary-btn-text: #fff;
+    --accent: #A78BFA;
+    --accent-hover: #8B5CF6;
+    --accent-text: #fff;
+    --danger: #FB7185;
+    --warning: #FDBA74;
+    --success: #6EE7B7;
+
+    --bg-color: #1A1020;
+    --bg-secondary: #231530;
+    --bg-tertiary: #2D1C3A;
+
+    --card-bg: rgba(244, 114, 182, 0.06);
+    --card-bg-hover: rgba(244, 114, 182, 0.10);
+    --card-border: rgba(244, 114, 182, 0.12);
+    --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+    --glass-bg: rgba(244, 114, 182, 0.06);
+    --glass-border: rgba(244, 114, 182, 0.15);
+    --glass-blur: 20px;
+
+    --text-main: #FDF2F8;
+    --text-secondary: #D4A0C0;
+    --text-muted: #9C6B8A;
+
+    --border-color: rgba(244, 114, 182, 0.1);
+    --input-bg: rgba(244, 114, 182, 0.08);
+    --input-border: rgba(244, 114, 182, 0.18);
+    --input-focus: rgba(244, 114, 182, 0.35);
+
+    --modal-overlay: rgba(10, 5, 15, 0.65);
+    --scrollbar-thumb: rgba(244, 114, 182, 0.15);
+    --scrollbar-thumb-hover: rgba(244, 114, 182, 0.3);
+    --bar-segment-text: rgba(255, 255, 255, 0.85);
+    --selection-text: #fff;
+}
+
+/* ========================================
+   Global Reset & Base
+   ======================================== */
 * {
     margin: 0;
     padding: 0;
@@ -52,11 +155,12 @@
 
 *::selection {
     background: var(--primary);
-    color: #fff;
+    color: var(--selection-text);
 }
 
 html {
     scroll-behavior: smooth;
+    transition: background-color 0.3s ease;
 }
 
 body {
@@ -67,6 +171,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    transition: background-color 0.35s ease, color 0.35s ease;
 }
 
 a {
@@ -96,24 +201,29 @@ input, select, textarea {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--scrollbar-thumb);
     border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--scrollbar-thumb-hover);
 }
 
-/* Glass Card Utility */
+/* ========================================
+   Glass Card Utility
+   ======================================== */
 .glass-card {
     background: var(--glass-bg);
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
+    transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
-/* Button Utilities */
+/* ========================================
+   Button Utilities
+   ======================================== */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -130,18 +240,18 @@ input, select, textarea {
 
 .btn-primary {
     background: var(--primary);
-    color: #fff;
+    color: var(--primary-btn-text);
 }
 
 .btn-primary:hover {
     background: var(--primary-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(108, 99, 255, 0.4);
+    box-shadow: 0 4px 15px color-mix(in srgb, var(--primary) 40%, transparent);
 }
 
 .btn-accent {
     background: var(--accent);
-    color: #0A0A0F;
+    color: var(--accent-text);
     font-weight: 600;
 }
 
@@ -170,7 +280,9 @@ input, select, textarea {
     background: rgba(255, 107, 107, 0.25);
 }
 
-/* Input Utility */
+/* ========================================
+   Input Utility
+   ======================================== */
 .input {
     width: 100%;
     padding: 12px 16px;
@@ -191,11 +303,13 @@ input, select, textarea {
     color: var(--text-muted);
 }
 
-/* Modal Overlay */
+/* ========================================
+   Modal Overlay
+   ======================================== */
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.6);
+    background: var(--modal-overlay);
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;

@@ -17,10 +17,7 @@ export default function Sidebar() {
       <aside className="sidebar glass-card">
         <div className="sidebar-brand">
           <div className="sidebar-logo">
-            <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
-              <rect width="40" height="40" rx="12" fill="var(--primary)" />
-              <path d="M12 20L18 26L28 14" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <img src="/quickfinancialPNG.png" alt="logo" style={{ width: '55px'}} />
           </div>
           <span className="sidebar-title">Quick Financial</span>
         </div>

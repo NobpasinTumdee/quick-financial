@@ -1,11 +1,34 @@
 import { useState, useEffect, type FormEvent } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useProfile } from '../hooks/useProfile'
+import { useTheme, type ThemeName } from '../context/ThemeContext'
 import './Settings.css'
+
+const THEMES: { id: ThemeName; name: string; description: string; preview: { bg: string; primary: string; accent: string } }[] = [
+  {
+    id: 'dark',
+    name: 'Dark',
+    description: 'Deep dark with purple accent',
+    preview: { bg: '#0A0A0F', primary: '#6C63FF', accent: '#00D9A6' },
+  },
+  {
+    id: 'light',
+    name: 'Light',
+    description: 'Minimal white with green accent',
+    preview: { bg: '#F5F5F0', primary: '#009944', accent: '#009944' },
+  },
+  {
+    id: 'pink',
+    name: 'Pink Cute',
+    description: 'Cute dark pink aesthetic',
+    preview: { bg: '#1A1020', primary: '#F472B6', accent: '#A78BFA' },
+  },
+]
 
 export default function Settings() {
   const { user, signOut } = useAuth()
   const { profile, updateProfile } = useProfile()
+  const { theme, setTheme, isSystem, setUseSystem } = useTheme()
 
   const [salary, setSalary] = useState('')
   const [saving, setSaving] = useState(false)
@@ -48,6 +71,58 @@ export default function Settings() {
             <div className="settings-email">{user?.email}</div>
             <div className="settings-id">ID: {user?.id?.slice(0, 8)}...</div>
           </div>
+        </div>
+      </div>
+
+      {/* Theme Picker */}
+      <div className="settings-section glass-card" data-aos="fade-up" data-aos-delay="75">
+        <h3>Appearance</h3>
+
+        {/* System toggle */}
+        <label className="theme-system-toggle">
+          <input
+            type="checkbox"
+            checked={isSystem}
+            onChange={e => setUseSystem(e.target.checked)}
+          />
+          <span className="toggle-switch" />
+          <span className="toggle-label">Use system theme</span>
+        </label>
+
+        {/* Theme cards */}
+        <div className="theme-grid">
+          {THEMES.map(t => (
+            <button
+              key={t.id}
+              className={`theme-card ${theme === t.id && !isSystem ? 'active' : ''} ${isSystem ? 'system-mode' : ''}`}
+              onClick={() => setTheme(t.id)}
+              disabled={isSystem}
+            >
+              {/* Mini preview */}
+              <div className="theme-preview" style={{ background: t.preview.bg }}>
+                <div className="theme-preview-sidebar" style={{ background: t.id === 'light' ? '#fff' : `color-mix(in srgb, ${t.preview.bg} 80%, #fff)`, borderRight: `1px solid ${t.id === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.1)'}` }}>
+                  <div className="theme-preview-dot" style={{ background: t.preview.primary }} />
+                  <div className="theme-preview-line" style={{ background: t.id === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)' }} />
+                  <div className="theme-preview-line short" style={{ background: t.id === 'light' ? 'rgba(0,0,0,0.07)' : 'rgba(255,255,255,0.06)' }} />
+                </div>
+                <div className="theme-preview-content">
+                  <div className="theme-preview-card" style={{ background: t.id === 'light' ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)', borderColor: t.id === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.08)' }}>
+                    <div className="theme-preview-bar" style={{ background: t.preview.primary }} />
+                    <div className="theme-preview-bar accent" style={{ background: t.preview.accent }} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="theme-card-info">
+                <span className="theme-card-name">{t.name}</span>
+                <span className="theme-card-desc">{t.description}</span>
+              </div>
+
+              {theme === t.id && !isSystem && (
+                <div className="theme-check">&#10003;</div>
+              )}
+            </button>
+          ))}
         </div>
       </div>
 

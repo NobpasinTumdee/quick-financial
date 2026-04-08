@@ -37,7 +37,7 @@
 .login-bg-orb-3 {
     width: 200px;
     height: 200px;
-    background: #FF6B6B;
+    background: var(--danger);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -167,7 +167,7 @@
 .login-error {
     background: rgba(255, 107, 107, 0.12);
     border: 1px solid rgba(255, 107, 107, 0.25);
-    color: #FF6B6B;
+    color: var(--danger);
     padding: 10px 14px;
     border-radius: var(--radius-md);
     font-size: 0.85rem;
@@ -177,7 +177,7 @@
 .login-success {
     background: rgba(78, 203, 113, 0.12);
     border: 1px solid rgba(78, 203, 113, 0.25);
-    color: #4ECB71;
+    color: var(--success);
     padding: 10px 14px;
     border-radius: var(--radius-md);
     font-size: 0.85rem;
