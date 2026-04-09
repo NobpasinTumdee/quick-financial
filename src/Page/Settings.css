@@ -47,6 +47,95 @@
     color: var(--text-muted);
 }
 
+/* ===== Account Switcher ===== */
+.saved-accounts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.saved-account-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: border-color var(--transition);
+}
+
+.saved-account-item:hover {
+    border-color: var(--text-muted);
+}
+
+.saved-account-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.saved-account-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.saved-account-email {
+    font-weight: 600;
+    font-size: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.saved-account-id {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.saved-account-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.btn-sm {
+    padding: 6px 14px !important;
+    font-size: 0.8rem !important;
+}
+
+.switch-error {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    color: #ff6b6b;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+}
+
+@media (max-width: 520px) {
+    .saved-account-item {
+        flex-wrap: wrap;
+    }
+
+    .saved-account-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
 /* ===== Theme Picker ===== */
 
 /* System toggle */

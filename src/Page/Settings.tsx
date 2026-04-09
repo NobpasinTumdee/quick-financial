@@ -1,5 +1,6 @@
 import { useState, useEffect, type FormEvent } from 'react'
 import { useAuth } from '../context/AuthContext'
+import type { SavedAccount } from '../context/AuthContext'
 import { useProfile } from '../hooks/useProfile'
 import { useTheme, type ThemeName } from '../context/ThemeContext'
 import './Settings.css'
@@ -146,7 +147,7 @@ const THEMES: { id: ThemeName; name: string; description: string; preview: { bg:
 ]
 
 export default function Settings() {
-  const { user, signOut } = useAuth()
+  const { user, signOut, savedAccounts, switchAccount, removeSavedAccount } = useAuth()
   const { profile, updateProfile } = useProfile()
   const { theme, setTheme, isSystem, setUseSystem } = useTheme()
 
@@ -154,10 +155,30 @@ export default function Settings() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [showAllThemes, setShowAllThemes] = useState(false)
+  const [switching, setSwitching] = useState<string | null>(null)
+  const [switchError, setSwitchError] = useState('')
 
   useEffect(() => {
     if (profile) setSalary(String(profile.base_salary || ''))
   }, [profile])
+
+  const otherAccounts = savedAccounts.filter(a => a.user_id !== user?.id)
+
+  const handleSwitch = async (account: SavedAccount) => {
+    setSwitching(account.user_id)
+    setSwitchError('')
+    const { error } = await switchAccount(account)
+    if (error) {
+      setSwitchError(`Session expired for ${account.email}. Account removed. Please log in again.`)
+    }
+    setSwitching(null)
+  }
+
+  const handleRemoveAccount = (account: SavedAccount) => {
+    if (confirm(`Remove ${account.email} from saved accounts?`)) {
+      removeSavedAccount(account.user_id)
+    }
+  }
 
   const handleSave = async (e: FormEvent) => {
     e.preventDefault()
@@ -194,6 +215,48 @@ export default function Settings() {
           </div>
         </div>
       </div>
+
+      {/* Account Switcher */}
+      {otherAccounts.length > 0 && (
+        <div className="settings-section glass-card" data-aos="fade-up" data-aos-delay="75">
+          <h3>Switch Account</h3>
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 12 }}>
+            Switch to a previously logged-in account without signing in again.
+          </p>
+          {switchError && (
+            <div className="switch-error">{switchError}</div>
+          )}
+          <div className="saved-accounts-list">
+            {otherAccounts.map(account => (
+              <div key={account.user_id} className="saved-account-item">
+                <div className="saved-account-avatar">
+                  {account.email.charAt(0).toUpperCase()}
+                </div>
+                <div className="saved-account-info">
+                  <div className="saved-account-email">{account.email}</div>
+                  <div className="saved-account-id">ID: {account.user_id}</div>
+                </div>
+                <div className="saved-account-actions">
+                  <button
+                    className="btn btn-primary btn-sm"
+                    onClick={() => handleSwitch(account)}
+                    disabled={switching !== null}
+                  >
+                    {switching === account.user_id ? 'Switching...' : 'Switch'}
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleRemoveAccount(account)}
+                    disabled={switching !== null}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Financial Settings */}
       <form className="settings-section glass-card" onSubmit={handleSave} data-aos="fade-up" data-aos-delay="100">
