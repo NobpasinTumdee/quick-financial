@@ -8,6 +8,7 @@ import Home from './Page/Home'
 import Wallets from './Page/Wallets'
 import Budget from './Page/Budget'
 import Settings from './Page/Settings'
+import Minigame from './Page/Minigame'
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
           { path: '/wallets', element: <Wallets /> },
           { path: '/budget', element: <Budget /> },
           { path: '/settings', element: <Settings /> },
+          { path: '/minigame', element: <Minigame /> },
         ],
       },
     ],

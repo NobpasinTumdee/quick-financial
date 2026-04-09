@@ -154,3 +154,44 @@ npm run build
 <p align="center">
   Built with &#9829; using React + Supabase
 </p>
+
+
+
+ Files Created
+
+  ┌─────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │                  File                   │                                                  Purpose                                                   │
+  ├─────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ src/constants/minigameLevels.ts         │ 5 hardcoded puzzle levels (3x3, 3x3, 4x4, 4x4, 5x5) with solutions and point values                        │
+  ├─────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ src/hooks/useMinigameProfile.ts         │ Supabase hook — fetches/creates MinigameProfile, recordWin() updates points/streak/level, hasPlayedToday() │
+  │                                         │  check                                                                                                     │
+  ├─────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ src/hooks/useMinigame.ts                │ Game logic hook — path tracking, adjacency validation, fixed number checkpoint enforcement, undo, reset    │
+  ├─────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ src/components/Minigame/StreakBoard.tsx │ Fire streak display with animated fire icon, points, best streak, level                                    │
+  ├─────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ src/components/Minigame/GameGrid.tsx    │ Interactive grid with pointer drag support (mouse + touch via elementFromPoint), connection lines, visit   │
+  │                                         │ animations                                                                                                 │
+  ├─────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ src/components/Minigame/WinModal.tsx    │ Victory modal with confetti particles, points earned, streak count                                         │
+  ├─────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ src/Page/Minigame.tsx                   │ Main page composing all components, progress bar, instructions, already-played state                       │
+  ├─────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ src/Page/Minigame.css                   │ Full styling — glassmorphism grid, fire gradient visited cells, pulse/glow animations, responsive mobile   │
+  │                                         │ layout                                                                                                     │
+  └─────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+  Files Modified
+
+  - src/App.tsx — Added /minigame route
+  - src/Layout/Sidebar.tsx — Added Minigame nav item with fire icon
+
+  Key Features
+
+  - Drag interaction: Works with mouse drag and touch swipe (uses pointerMove + elementFromPoint)
+  - Undo: Drag backward or click Undo button; Reset clears entire path
+  - Checkpoint validation: Fixed numbers in the grid must be visited at the correct position in the path
+  - Streak logic: Consecutive days increment streak; missing a day resets to 1; daily play limit enforced
+  - Win animation: Grid cells cascade with golden glow + confetti particles fly upward
+  - 5 progressive levels: 3x3 (easy) → 5x5 (harder), 10-50 points each

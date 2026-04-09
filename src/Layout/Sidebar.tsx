@@ -5,6 +5,7 @@ const navItems = [
   { path: '/', label: 'Dashboard', icon: '⊞' },
   { path: '/wallets', label: 'Wallets', icon: '◈' },
   { path: '/budget', label: 'Budget', icon: '◉' },
+  { path: '/minigame', label: 'Minigame', icon: '🔥' },
   { path: '/settings', label: 'Settings', icon: '⚙' },
 ]
 
