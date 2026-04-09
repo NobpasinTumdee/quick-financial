@@ -106,6 +106,28 @@ export function useTransactions(walletId?: string) {
     return { error, data }
   }
 
+  const updateCategory = async (id: string, updates: { name?: string; icon_name?: string; color?: string }) => {
+    const { error } = await supabase.from('Category').update(updates).eq('id', id)
+    if (!error) await fetchCategories()
+    return { error }
+  }
+
+  const deleteCategory = async (id: string) => {
+    const { error } = await supabase.from('Category').delete().eq('id', id)
+    if (!error) await fetchCategories()
+    return { error }
+  }
+
+  const getCategoryUsage = async (): Promise<Set<string>> => {
+    if (!user) return new Set()
+    const { data } = await supabase
+      .from('Transaction')
+      .select('category_id')
+    const ids = new Set<string>()
+    ;(data ?? []).forEach(t => ids.add(t.category_id))
+    return ids
+  }
+
   // Get YTD income for tax calculation
   const getYTDIncome = useCallback(() => {
     const currentYear = new Date().getFullYear()
@@ -133,8 +155,8 @@ export function useTransactions(walletId?: string) {
 
   return {
     transactions, categories, loading,
-    addTransaction, addCategory,
+    addTransaction, addCategory, updateCategory, deleteCategory, getCategoryUsage,
     getYTDIncome, getCurrentMonthByType,
-    refetch: fetchTransactions,
+    refetch: fetchTransactions, refetchCategories: fetchCategories,
   }
 }
