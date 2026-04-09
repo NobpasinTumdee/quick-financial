@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, type ReactElement } from 'react'
 import type { LevelConfig } from '../../constants/minigameLevels'
 import type { GameState } from '../../hooks/useMinigame'
 
@@ -35,7 +35,7 @@ export default function GameGrid({
   }, [onPointerEnter])
 
   const { gridSize, fixedNumbers } = level
-  const cells: JSX.Element[] = []
+  const cells: ReactElement[] = []
 
   for (let r = 0; r < gridSize; r++) {
     for (let c = 0; c < gridSize; c++) {
@@ -79,7 +79,7 @@ export default function GameGrid({
   }
 
   // Build connection lines between path cells
-  const lines: JSX.Element[] = []
+  const lines: ReactElement[] = []
   for (let i = 1; i < gameState.path.length; i++) {
     const [pr, pc] = gameState.path[i - 1]
     const [cr, cc] = gameState.path[i]
