@@ -42,6 +42,7 @@ export default function Budget() {
   const [salary, setSalary] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [showAllPlans, setShowAllPlans] = useState(false)
 
   const monthOptions = buildMonthOptions(currentMonth, currentYear)
 
@@ -101,7 +102,7 @@ export default function Budget() {
 
     const others = which === 'needs' ? wants + savings
       : which === 'wants' ? needs + savings
-      : needs + wants
+        : needs + wants
     const clamped = Math.min(value, 100 - 0) // allow typing but clamp on total
 
     if (clamped + others > 100) {
@@ -258,7 +259,7 @@ export default function Budget() {
         {budgetHistory.length === 0 ? (
           <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 24 }}>No budget history</p>
         ) : (
-          <div className="history-list">
+          <div className={`history-list ${showAllPlans ? 'expanded' : ''}`}>
             {budgetHistory.map(b => {
               const isFuture = b.year > currentYear || (b.year === currentYear && b.month > currentMonth)
               return (
@@ -320,6 +321,19 @@ export default function Budget() {
                 </div>
               )
             })}
+
+            {!showAllPlans && (
+            <div className="history-list-overlay">
+              <button 
+                type="button" 
+                className="history-expand-btn"
+                onClick={() => setShowAllPlans(true)}
+              >
+                <span>Show more plans</span>
+                <span style={{ fontSize: '0.75rem' }}>▼</span>
+              </button>
+            </div>
+          )}
           </div>
         )}
       </div>

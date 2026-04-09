@@ -190,7 +190,7 @@ export default function Settings() {
           </div>
           <div>
             <div className="settings-email">{user?.email}</div>
-            <div className="settings-id">ID: {user?.id?.slice(0, 8)}...</div>
+            <div className="settings-id">ID: {user?.id}</div>
           </div>
         </div>
       </div>
