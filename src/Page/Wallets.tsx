@@ -24,7 +24,7 @@ function CategoryIcon({ iconUrl, color, size = 28 }: { iconUrl?: string; color: 
 
   return (
     <img
-      src={imgError ? '/quickfinancial.png' : iconUrl}
+      src={imgError ? '/quickfinancialPNG.png' : iconUrl}
       alt=""
       style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, background: color }}
       onError={() => { if (!imgError) setImgError(true) }}
